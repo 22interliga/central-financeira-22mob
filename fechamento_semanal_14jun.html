@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fechamento Semanal — 22 Mobilidade</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0a0f;color:#f0f0f8;font-family:Arial,sans-serif;padding:16px 14px 40px;}
+h1{font-size:22px;font-weight:900;color:#1F8CE6;text-align:center;letter-spacing:2px;margin-bottom:4px;}
+.periodo{text-align:center;font-size:12px;color:#7a7a9a;margin-bottom:20px;}
+.stitle{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5BB8FF;margin:16px 0 8px;border-bottom:1px solid #25253a;padding-bottom:5px;}
+.card{background:#111118;border:1px solid #25253a;border-radius:12px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;}
+.card.pagar::before{background:#00c853;}
+.card.deve::before{background:#ff3d3d;}
+.card-name{font-size:15px;font-weight:900;margin-bottom:2px;}
+.card-tel{font-size:11px;color:#7a7a9a;margin-bottom:10px;}
+.rows{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:10px;}
+.row{background:#1a1a24;border-radius:7px;padding:7px 10px;}
+.row-label{font-size:9px;color:#7a7a9a;text-transform:uppercase;letter-spacing:.5px;}
+.row-val{font-size:13px;font-weight:700;margin-top:2px;}
+.saldo-box{border-top:1px solid #25253a;padding-top:10px;display:flex;justify-content:space-between;align-items:center;}
+.saldo-label{font-size:11px;color:#7a7a9a;}
+.saldo-val{font-size:18px;font-weight:900;}
+.saldo-val.pagar{color:#00c853;}
+.saldo-val.deve{color:#ff3d3d;}
+.wbtn{display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#000;font-weight:700;font-size:12px;padding:8px 14px;border-radius:8px;text-decoration:none;border:none;cursor:pointer;}
+.badge{display:inline-block;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;margin-left:8px;}
+.badge.pagar{background:rgba(0,200,83,.15);color:#00c853;}
+.badge.deve{background:rgba(255,61,61,.15);color:#ff3d3d;}
+.nottel{font-size:11px;color:#7a7a9a;font-style:italic;}
+</style>
+</head>
+<body>
+<h1>22 MOBILIDADE</h1>
+<div class="periodo">Fechamento Semanal — 08/06 a 14/06/2026</div>
+
+<div class="stitle">Voce Paga ao Motorista</div>
+<div id="pagar"></div>
+
+<div class="stitle">Motorista Deve Pagar</div>
+<div id="deve"></div>
+
+<script>
+function fmt(v){
+  return 'R$ '+Math.abs(v).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
+
+function buildMsg(r){
+  var msg = '22 MOBILIDADE - FECHAMENTO SEMANAL\n08/06 a 14/06/2026\n\nOla '+r.nome.split(' ')[0]+'!\n\n';
+  msg += 'Viagens realizadas: '+r.viagens+'\n';
+  msg += 'Faturado total: '+fmt(r.fat)+'\n';
+  msg += 'Repasse (taxa): - '+fmt(r.repasse)+'\n';
+  if(r.mais>0){
+    msg += '\nCorridas Mais Supermercados: '+r.corrMais+'\n';
+    msg += 'Valor Mais: '+fmt(r.mais)+'\n';
+    msg += '(-) Repasse: - '+fmt(r.repasse)+'\n';
+  }
+  msg += '\n-------------------------\n';
+  var saldo = r.mais - r.repasse;
+  if(saldo>=0){
+    msg += 'VOCE RECEBE: '+fmt(saldo)+'\n';
+    msg += 'Pix na segunda-feira.\n';
+  } else {
+    msg += 'VOCE DEVE: '+fmt(Math.abs(saldo))+'\n';
+    msg += 'Favor enviar via Pix na segunda.\n';
+  }
+  msg += '\n22 Mobilidade';
+  return msg;
+}
+
+var motoristas = [
+  {nome:'Edvaldo da cunha Filho',          tel:'71986610589', viagens:63,  fat:726.28, repasse:72.64,  corrMais:21, mais:231.00},
+  {nome:'Sergio Santos de jesus',           tel:'71981945755', viagens:20,  fat:223.31, repasse:22.34,  corrMais:9,  mais:99.00},
+  {nome:'DIJAN BARRETO DE JESUS',           tel:'',            viagens:10,  fat:106.97, repasse:10.70,  corrMais:7,  mais:77.00},
+  {nome:'Rafael Vinicius de Jesus Campos',  tel:'71992334569', viagens:13,  fat:224.09, repasse:22.40,  corrMais:7,  mais:77.00},
+  {nome:'Alysson Santana De Freitas',       tel:'71998066268', viagens:18,  fat:219.13, repasse:21.92,  corrMais:6,  mais:66.00},
+  {nome:'Miqueias Lopes',                   tel:'',            viagens:18,  fat:279.03, repasse:27.91,  corrMais:4,  mais:44.00},
+  {nome:'Jorge Carvalho dos Santos',        tel:'',            viagens:4,   fat:50.24,  repasse:5.02,   corrMais:2,  mais:24.00},
+  {nome:'Morena',                           tel:'',            viagens:3,   fat:37.47,  repasse:3.75,   corrMais:1,  mais:11.00},
+  {nome:'Claudio aderclan dos Santos',      tel:'71992154874', viagens:4,   fat:48.00,  repasse:4.80,   corrMais:1,  mais:11.00},
+  {nome:'Marcelo Rodrigues dos Santos',     tel:'71981867125', viagens:9,   fat:104.25, repasse:10.44,  corrMais:1,  mais:11.00},
+  {nome:'Mauro Celso Siqueira da Silva',    tel:'71988284037', viagens:16,  fat:331.99, repasse:33.21,  corrMais:1,  mais:11.00},
+  {nome:'marcelo dias',                     tel:'71987447463', viagens:21,  fat:266.25, repasse:26.63,  corrMais:0,  mais:0.00},
+  {nome:'Diosthenes',                       tel:'71983924387', viagens:21,  fat:232.97, repasse:23.30,  corrMais:0,  mais:0.00},
+  {nome:'Carlos Magno Moreira de Queiroz',  tel:'71996673300', viagens:9,   fat:115.65, repasse:11.56,  corrMais:1,  mais:11.00},
+  {nome:'Helio da Conceicao',               tel:'71991894501', viagens:1,   fat:13.00,  repasse:1.30,   corrMais:0,  mais:0.00},
+];
+
+var elPagar = document.getElementById('pagar');
+var elDeve  = document.getElementById('deve');
+
+motoristas.forEach(function(r){
+  var saldo = r.mais - r.repasse;
+  var tipo  = saldo >= 0 ? 'pagar' : 'deve';
+  var msg   = buildMsg(r);
+  var wbtn  = r.tel
+    ? '<a class="wbtn" href="https://wa.me/55'+r.tel+'?text='+encodeURIComponent(msg)+'">Enviar WPP</a>'
+    : '<span class="nottel">Sem telefone</span>';
+
+  var card = document.createElement('div');
+  card.className = 'card ' + tipo;
+  card.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">'+
+      '<div class="card-name">'+r.nome+'<span class="badge '+tipo+'">'+(tipo==='pagar'?'VOCE PAGA':'DEVE PAGAR')+'</span></div>'+
+    '</div>'+
+    '<div class="card-tel">'+(r.tel||'Sem telefone')+'</div>'+
+    '<div class="rows">'+
+      '<div class="row"><div class="row-label">Viagens</div><div class="row-val">'+r.viagens+'</div></div>'+
+      '<div class="row"><div class="row-label">Faturado</div><div class="row-val">'+fmt(r.fat)+'</div></div>'+
+      '<div class="row"><div class="row-label">Repasse</div><div class="row-val" style="color:#ff3d3d">'+fmt(r.repasse)+'</div></div>'+
+      '<div class="row"><div class="row-label">Mais Superm.</div><div class="row-val" style="color:#5BB8FF">'+fmt(r.mais)+' ('+r.corrMais+'x)</div></div>'+
+    '</div>'+
+    '<div class="saldo-box">'+
+      '<div>'+
+        '<div class="saldo-label">'+(saldo>=0?'Voce paga ao motorista':'Motorista deve pagar')+'</div>'+
+        '<div class="saldo-val '+tipo+'">'+fmt(Math.abs(saldo))+'</div>'+
+      '</div>'+
+      wbtn+
+    '</div>';
+
+  if(tipo==='pagar') elPagar.appendChild(card);
+  else               elDeve.appendChild(card);
+});
+</script>
+</body>
+</html>
