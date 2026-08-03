@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0f">
+<title>22 Mobilidade</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0a0f;color:#f0f0f8;font-family:Arial,sans-serif;padding:0 0 40px;}
+.top{background:#111118;border-bottom:1px solid #25253a;padding:14px 16px;display:flex;align-items:center;gap:10px;}
+.top h1{font-size:16px;font-weight:900;color:#1F8CE6;letter-spacing:2px;}
+.top span{font-size:11px;color:#7a7a9a;}
+.tabs{display:flex;margin:14px 14px 0;background:#111118;border:1px solid #25253a;border-radius:10px;padding:3px;}
+.tab{flex:1;padding:10px 4px;text-align:center;font-size:12px;font-weight:700;color:#7a7a9a;cursor:pointer;border-radius:7px;}
+.tab.on{background:#1F8CE6;color:#fff;}
+.page{display:none;padding:14px;}
+.page.on{display:block;}
+.sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5BB8FF;margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid #25253a;}
+.uparea{background:#111118;border:2px dashed #25253a;border-radius:12px;padding:20px;text-align:center;margin-bottom:10px;}
+.uparea h3{font-size:14px;margin-bottom:4px;}
+.uparea p{font-size:11px;color:#7a7a9a;margin-bottom:12px;}
+.upbtn{display:inline-block;background:#1F8CE6;color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:8px;cursor:pointer;position:relative;}
+.upbtn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.flist{margin-top:8px;display:flex;flex-direction:column;gap:5px;}
+.fitem{background:#1a1a24;border:1px solid #25253a;border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center;}
+.fname{font-size:11px;color:#00c853;}
+.fdel{background:none;border:none;color:#ff3d3d;font-size:16px;cursor:pointer;padding:0 4px;}
+.addmore{border:1px dashed #25253a;border-radius:7px;padding:8px;text-align:center;font-size:11px;color:#7a7a9a;cursor:pointer;position:relative;margin-top:5px;}
+.addmore input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.lbl{font-size:10px;font-weight:700;color:#7a7a9a;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;}
+.inp{width:100%;background:#111118;border:1px solid #25253a;border-radius:8px;padding:10px 12px;color:#f0f0f8;font-size:13px;outline:none;margin-bottom:10px;}
+.inp:focus{border-color:#1F8CE6;}
+.btn{width:100%;padding:13px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;display:block;text-align:center;text-decoration:none;}
+.bblu{background:#1F8CE6;color:#fff;}
+.bwpp{background:#25d366;color:#000;}
+.bgry{background:#1a1a24;border:1px solid #25253a;color:#f0f0f8;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.kc{background:#111118;border:1px solid #25253a;border-radius:10px;padding:12px;position:relative;overflow:hidden;}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kc.bl::before{background:#1F8CE6;}
+.kc.gr::before{background:#00c853;}
+.kc.rd::before{background:#ff3d3d;}
+.kc-l{font-size:9px;color:#7a7a9a;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.kc-v{font-size:20px;font-weight:900;}
+.kc-s{font-size:10px;color:#7a7a9a;margin-top:2px;}
+table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:12px;}
+th{background:#1a1a24;padding:8px 10px;text-align:left;font-size:9px;color:#7a7a9a;text-transform:uppercase;letter-spacing:1px;}
+td{padding:9px 10px;border-top:1px solid #25253a;}
+.tf td{background:rgba(31,140,230,.1);color:#5BB8FF;font-weight:700;border-top:2px solid #1F8CE6;}
+.dc{background:#111118;border:1px solid #25253a;border-radius:12px;padding:13px;margin-bottom:9px;}
+.dc.pg{border-left:3px solid #00c853;}
+.dc.dv{border-left:3px solid #ff3d3d;}
+.dc.bl{border-left:3px solid #1F8CE6;}
+.dc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.dc-nm{font-size:14px;font-weight:900;}
+.dc-bdg{font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:6px;}
+.bdg-gr{background:rgba(0,200,83,.15);color:#00c853;}
+.bdg-rd{background:rgba(255,61,61,.15);color:#ff3d3d;}
+.dc-rws{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:10px;}
+.dr{background:#1a1a24;border-radius:6px;padding:6px 8px;}
+.dr-l{font-size:9px;color:#7a7a9a;text-transform:uppercase;letter-spacing:.5px;}
+.dr-v{font-size:12px;font-weight:700;margin-top:2px;}
+.dc-bot{border-top:1px solid #25253a;padding-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.dc-sl{font-size:10px;color:#7a7a9a;}
+.dc-sv{font-size:17px;font-weight:900;}
+.sv-gr{color:#00c853;}
+.sv-rd{color:#ff3d3d;}
+.ph-row{display:flex;align-items:center;gap:6px;margin-top:4px;}
+.ph-inp{background:#1a1a24;border:1px solid #25253a;border-radius:6px;padding:5px 8px;color:#f0f0f8;font-size:12px;width:145px;outline:none;}
+.wbtn{display:inline-flex;align-items:center;background:#25d366;color:#000;font-weight:700;font-size:11px;padding:7px 12px;border-radius:7px;text-decoration:none;white-space:nowrap;border:none;cursor:pointer;}
+.wbtn.pnd{background:#f0a500;}
+.sep{height:1px;background:#25253a;margin:14px 0;}
+.dtc{background:#111118;border:1px solid #25253a;border-left:3px solid #1F8CE6;border-radius:10px;padding:12px;margin-bottom:8px;}
+.dtc-t{font-size:12px;font-weight:700;color:#5BB8FF;margin-bottom:8px;}
+.rst-btn{background:#1a1a24;border:1px solid #1F8CE6;color:#5BB8FF;font-size:11px;padding:8px 12px;border-radius:8px;cursor:pointer;width:100%;margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="top"><h1>22 MOB</h1><span>Sistema Financeiro</span></div>
+<div class="tabs">
+  <div class="tab on" id="tb0" onclick="goTab(0)">MERCADO</div>
+  <div class="tab" id="tb1" onclick="goTab(1)">REPASSE</div>
+  <div class="tab" id="tb2" onclick="goTab(2)">FECHAMENTO</div>
+</div>
+
+<!-- MERCADO -->
+<div class="page on" id="pg0">
+  <div id="rst0"></div>
+  <div class="sec">Importar CSVs</div>
+  <div class="uparea">
+    <h3>Corridas do Mais Supermercados</h3>
+    <p>Selecione um ou mais arquivos CSV</p>
+    <label class="upbtn">Selecionar CSV<input type="file" multiple onchange="addM(this)"></label>
+    <div class="flist" id="flM"></div>
+  </div>
+  <label class="lbl">Periodo</label>
+  <input class="inp" id="perM" placeholder="Ex: 22 a 30/06/2026">
+  <button class="btn bblu" onclick="gerarM()">GERAR RELATORIO</button>
+  <div id="resM" style="display:none">
+    <div class="sec">Resumo Geral</div>
+    <div class="g2" id="sumM"></div>
+    <div class="sec">Por Valor</div>
+    <table><thead><tr><th>Valor</th><th>Qtd</th><th>Subtotal</th></tr></thead><tbody id="tbM"></tbody></table>
+    <div class="sec">Por Data</div>
+    <div id="dtM"></div>
+    <div class="sec">Por Motorista</div>
+    <div id="motM"></div>
+    <div class="sep"></div>
+    <button class="btn bwpp" onclick="wppMais()">Enviar Resumo ao Supermercado</button>
+    <button class="btn bgry" onclick="pdfMais()">Baixar PDF para o Supermercado</button>
+  </div>
+</div>
+
+<!-- REPASSE -->
+<div class="page" id="pg1">
+  <div class="sec">Relatorio Semanal da Plataforma</div>
+  <div class="uparea">
+    <h3>CSV de Repasse</h3>
+    <p>Arquivo com Motorista, Viagens, Faturado, A Receber</p>
+    <label class="upbtn">Selecionar CSV<input type="file" onchange="loadR(this)"></label>
+    <div class="flist" id="flR"></div>
+  </div>
+  <label class="lbl">Periodo</label>
+  <input class="inp" id="perR" placeholder="Ex: 22 a 28/06/2026">
+  <button class="btn bblu" onclick="gerarR()">CALCULAR REPASSE</button>
+  <div id="resR" style="display:none">
+    <div class="sec">Resumo</div>
+    <div class="g2" id="sumR"></div>
+    <div class="sec">Por Motorista</div>
+    <div id="motR"></div>
+  </div>
+</div>
+
+<!-- FECHAMENTO -->
+<div class="page" id="pg2">
+  <div class="sec">1. CSVs do Mais Supermercados</div>
+  <div class="uparea">
+    <h3>Corridas do Mais</h3>
+    <p>Um ou mais CSVs</p>
+    <label class="upbtn">Selecionar CSV<input type="file" multiple onchange="addFM(this)"></label>
+    <div class="flist" id="flFM"></div>
+  </div>
+  <div class="sec">2. CSV do Repasse Semanal</div>
+  <div class="uparea">
+    <h3>Relatorio Semanal</h3>
+    <p>Com Motorista, Viagens, Faturado, A Receber</p>
+    <label class="upbtn">Selecionar CSV<input type="file" onchange="loadFR(this)"></label>
+    <div class="flist" id="flFR"></div>
+  </div>
+  <label class="lbl">Periodo</label>
+  <input class="inp" id="perF" placeholder="Ex: 22 a 28/06/2026">
+  <button class="btn bblu" onclick="gerarF()">GERAR FECHAMENTO</button>
+  <div id="resF" style="display:none">
+    <div class="sec">Voce Paga ao Motorista</div>
+    <div id="fPag"></div>
+    <div class="sec">Motorista Deve Pagar</div>
+    <div id="fDev"></div>
+  </div>
+</div>
+
+<script>
+var TELS = {
+  'edvaldo da cunha filho':'71986610589',
+  'mauro celso siqueira da silva':'71988284037',
+  'diosthenes':'71983924387',
+  'alysson santana de freitas':'74998066268',
+  'sergio santos de jesus':'71981945755',
+  'claudio aderclan dos santos':'71992154874',
+  'carlos magno moreira de queiroz':'71996126733',
+  'rafael vinicius de jesus campos':'71992334569',
+  'marcelo rodrigues dos santos':'71981867125',
+  'marcelo dias':'71987447463',
+  'helio da conceicao':'71991894501',
+  'dijan barreto de jesus':'71999480811',
+  'jorge carvalho dos santos':'71985071272',
+  'anderson pereira da cunha':'71985191316',
+  'miqueias lopes':''
+};
+var MAIS_TEL = '5571986511424';
+var _dM = [], _dR = null, _dFM = [], _dFR = null, _M = null;
+
+function norm(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
+function fmt(v){ return 'R$ '+Math.abs(v).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
+function pv(s){
+  if(!s) return 0;
+  s = String(s).replace(/R\$\s*/g,'').replace(/\s/g,'').trim();
+  if(s.indexOf(',')>=0 && s.indexOf('.')>=0) return parseFloat(s.replace(/\./g,'').replace(',','.')) || 0;
+  if(s.indexOf(',')>=0) return parseFloat(s.replace(',','.')) || 0;
+  return parseFloat(s) || 0;
+}
+function getTel(nome){
+  var n = norm(nome);
+  var ks = Object.keys(TELS);
+  for(var i=0;i<ks.length;i++) if(norm(ks[i])===n) return TELS[ks[i]];
+  try {
+    var saved = JSON.parse(localStorage.getItem('22mob_tels')||'{}');
+    for(var k in saved) if(norm(k)===n) return saved[k];
+  } catch(e){}
+  return '';
+}
+function saveTel(nome, tel){
+  try {
+    TELS[norm(nome)] = tel;
+    var saved = JSON.parse(localStorage.getItem('22mob_tels')||'{}');
+    saved[norm(nome)] = tel;
+    localStorage.setItem('22mob_tels', JSON.stringify(saved));
+  } catch(e){}
+}
+function onPhoneBlur(el){
+  var tel = el.value.replace(/[^0-9]/g,'');
+  var nome = el.getAttribute('data-nome')||'';
+  if(nome && tel.length>=10){
+    saveTel(nome, tel);
+    el.style.borderColor='#00c853';
+    setTimeout(function(){ el.style.borderColor='#25253a'; }, 1500);
+  }
+}
+function sendWpp(inputId, msg){
+  var el = document.getElementById(inputId);
+  var tel = el ? el.value.replace(/[^0-9]/g,'') : '';
+  if(!tel || tel.length<10){ alert('Digite o numero de telefone!'); return; }
+  var nome = el ? el.getAttribute('data-nome') : '';
+  if(nome) saveTel(nome, tel);
+  window.open('https://wa.me/55'+tel+'?text='+encodeURIComponent(msg), '_blank');
+}
+function parseLine(l){
+  var res=[],cur='',q=false;
+  for(var i=0;i<l.length;i++){
+    var c=l[i];
+    if(c==='"'){q=!q;}
+    else if(c===','&&!q){res.push(cur.trim());cur='';}
+    else{cur+=c;}
+  }
+  res.push(cur.trim());
+  return res;
+}
+function parseCSV(txt){
+  var lines = txt.replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim().split('\n').filter(function(l){return l.trim();});
+  if(lines.length<2) return [];
+  var hdr = parseLine(lines[0]).map(function(h){return h.replace(/"/g,'').trim();});
+  return lines.slice(1).map(function(line){
+    var cols = parseLine(line).map(function(c){return c.replace(/"/g,'').trim();});
+    var obj = {};
+    hdr.forEach(function(h,i){obj[h]=cols[i]||'';});
+    return obj;
+  });
+}
+function findCol(keys,names){
+  for(var i=0;i<names.length;i++)
+    for(var j=0;j<keys.length;j++)
+      if(norm(keys[j])===norm(names[i])) return keys[j];
+  for(var i=0;i<names.length;i++)
+    for(var j=0;j<keys.length;j++)
+      if(norm(keys[j]).indexOf(norm(names[i]))>=0) return keys[j];
+  return null;
+}
+function readFile(f, cb){
+  var r = new FileReader();
+  r.onload = function(e){
+    var txt = e.target.result;
+    if(!txt||txt.length<5){ alert('Arquivo vazio: '+f.name); return; }
+    var rows = parseCSV(txt);
+    if(!rows.length){ alert('Nao foi possivel ler: '+f.name); return; }
+    cb(rows, f.name);
+  };
+  r.onerror = function(){ alert('Erro ao ler: '+f.name); };
+  r.readAsText(f, 'UTF-8');
+}
+
+// ---- TABS ----
+function goTab(n){
+  for(var i=0;i<3;i++){
+    document.getElementById('tb'+i).className='tab'+(i===n?' on':'');
+    document.getElementById('pg'+i).className='page'+(i===n?' on':'');
+  }
+}
+
+// ---- MERCADO ----
+function addM(inp){
+  Array.from(inp.files).forEach(function(f){
+    if(_dM.find(function(x){return x.nome===f.name;})) return;
+    readFile(f, function(rows,nome){
+      _dM.push({nome:nome,rows:rows});
+      renderFlM();
+    });
+  });
+  inp.value='';
+}
+function renderFlM(){
+  var fl=document.getElementById('flM'); fl.innerHTML='';
+  _dM.forEach(function(f,i){
+    var d=document.createElement('div'); d.className='fitem';
+    d.innerHTML='<span class="fname">'+f.nome+'</span><button class="fdel" onclick="_dM.splice('+i+',1);renderFlM()">X</button>';
+    fl.appendChild(d);
+  });
+  if(_dM.length){
+    var am=document.createElement('div'); am.className='addmore';
+    am.innerHTML='<input type="file" multiple onchange="addM(this)">+ Adicionar mais';
+    fl.appendChild(am);
+  }
+}
+
+function gerarM(){
+  if(!_dM.length){ alert('Selecione pelo menos um arquivo CSV!'); return; }
+  var all=[];
+  _dM.forEach(function(f){all=all.concat(f.rows);});
+  var keys=Object.keys(all[0]||{});
+  var motK=findCol(keys,['Motorista']);
+  var valK=findCol(keys,['Valor']);
+  var pasK=findCol(keys,['Passageiro']);
+  var dtK=findCol(keys,['Data/Hora','Data']);
+  if(!motK||!valK){ alert('Colunas nao encontradas: '+keys.join(', ')); return; }
+  var rows=pasK ? all.filter(function(r){return (r[pasK]||'').toLowerCase().indexOf('mais')>=0;}) : all;
+  if(!rows.length){ alert('Nenhuma corrida do Mais Supermercados encontrada!'); return; }
+  var per=document.getElementById('perM').value||'Periodo';
+  var totalC=rows.length;
+  var totalV=rows.reduce(function(s,r){return s+pv(r[valK]);},0);
+  // por valor
+  var pVal={};
+  rows.forEach(function(r){
+    var v=pv(r[valK]); var k=v.toFixed(2);
+    if(!pVal[k]) pVal[k]={v:v,q:0,s:0};
+    pVal[k].q++; pVal[k].s+=v;
+  });
+  var sVal=Object.values(pVal).sort(function(a,b){return b.v-a.v;});
+  // por data
+  var pDt={};
+  rows.forEach(function(r){
+    var dt=dtK?(r[dtK]||'').slice(0,10):'Sem data';
+    if(!pDt[dt]) pDt[dt]={c:0,v:0,vals:{}};
+    var v=pv(r[valK]); pDt[dt].c++; pDt[dt].v+=v;
+    var k=v.toFixed(2);
+    if(!pDt[dt].vals[k]) pDt[dt].vals[k]={v:v,q:0,s:0};
+    pDt[dt].vals[k].q++; pDt[dt].vals[k].s+=v;
+  });
+  // por motorista
+  var pMot={};
+  rows.forEach(function(r){
+    var n=(r[motK]||'').trim(); if(!n) return;
+    var k=norm(n);
+    if(!pMot[k]) pMot[k]={nome:n,c:0,v:0,vals:{}};
+    var v=pv(r[valK]); pMot[k].c++; pMot[k].v+=v;
+    var vk=v.toFixed(2);
+    if(!pMot[k].vals[vk]) pMot[k].vals[vk]={v:v,q:0};
+    pMot[k].vals[vk].q++;
+  });
+  var sMot=Object.values(pMot).sort(function(a,b){return b.v-a.v;});
+  _M={sVal:sVal,totalC:totalC,totalV:totalV,per:per,pDt:pDt,sMot:sMot};
+  try{ localStorage.setItem('22mob_M', JSON.stringify(_M)); } catch(e){}
+  renderResM();
+}
+
+function renderResM(){
+  var d=_M; if(!d) return;
+  document.getElementById('sumM').innerHTML=
+    '<div class="kc bl"><div class="kc-l">Corridas</div><div class="kc-v">'+d.totalC+'</div><div class="kc-s">Mais Supermercados</div></div>'+
+    '<div class="kc gr"><div class="kc-l">Valor Total</div><div class="kc-v">'+fmt(d.totalV)+'</div><div class="kc-s">'+d.per+'</div></div>';
+  var tb=document.getElementById('tbM'); tb.innerHTML='';
+  d.sVal.forEach(function(v){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td style="color:#5BB8FF;font-weight:700">'+fmt(v.v)+'</td><td>'+v.q+'x</td><td>'+fmt(v.s)+'</td>';
+    tb.appendChild(tr);
+  });
+  var tf=document.createElement('tr'); tf.className='tf';
+  tf.innerHTML='<td>TOTAL</td><td>'+d.totalC+'</td><td>'+fmt(d.totalV)+'</td>';
+  tb.appendChild(tf);
+  var dtEl=document.getElementById('dtM'); dtEl.innerHTML='';
+  Object.keys(d.pDt).sort().forEach(function(dt){
+    var dd=d.pDt[dt];
+    var sv=Object.values(dd.vals).sort(function(a,b){return b.v-a.v;});
+    var h='<div class="dtc"><div class="dtc-t">'+dt+' - '+dd.c+' corridas | '+fmt(dd.v)+'</div>';
+    h+='<table><thead><tr><th>Valor</th><th>Qtd</th><th>Subtotal</th></tr></thead><tbody>';
+    sv.forEach(function(v){h+='<tr><td style="color:#5BB8FF">'+fmt(v.v)+'</td><td>'+v.q+'x</td><td>'+fmt(v.s)+'</td></tr>';});
+    h+='<tr class="tf"><td>TOTAL</td><td>'+dd.c+'</td><td>'+fmt(dd.v)+'</td></tr>';
+    h+='</tbody></table></div>';
+    dtEl.innerHTML+=h;
+  });
+  var motEl=document.getElementById('motM'); motEl.innerHTML='';
+  d.sMot.forEach(function(dm,idx){
+    var tel=getTel(dm.nome);
+    var detMsg='';
+    Object.values(dm.vals).sort(function(a,b){return b.v-a.v;}).forEach(function(x){detMsg+=fmt(x.v)+' x '+x.q+'\n';});
+    var msg='MAIS SUPERMERCADOS\n'+d.per+'\n\nOla '+dm.nome.split(' ')[0]+'!\n\nCorridas: '+dm.c+'\n\n'+detMsg+'\nTotal: '+fmt(dm.v)+'\n\n22 Mobilidade';
+    var tid='tm'+idx;
+    var card=document.createElement('div'); card.className='dc bl';
+    card.innerHTML=
+      '<div class="dc-top">'+
+        '<div><div class="dc-nm">'+dm.nome+'</div>'+
+        '<div class="ph-row"><input class="ph-inp" id="'+tid+'" type="tel" placeholder="71XXXXXXXXX" value="'+(tel||'')+'" data-nome="'+dm.nome+'" onblur="onPhoneBlur(this)" onchange="onPhoneBlur(this)"></div></div>'+
+        '<button class="wbtn'+(tel?'':' pnd')+'" onclick="sendWpp(\''+tid+'\',\''+msg.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n')+'\')">Enviar</button>'+
+      '</div>'+
+      '<div class="dc-rws">'+
+        '<div class="dr"><div class="dr-l">Corridas</div><div class="dr-v">'+dm.c+'</div></div>'+
+        '<div class="dr"><div class="dr-l">Total</div><div class="dr-v" style="color:#5BB8FF">'+fmt(dm.v)+'</div></div>'+
+      '</div>';
+    motEl.appendChild(card);
+  });
+  document.getElementById('resM').style.display='block';
+}
+
+function wppMais(){
+  if(!_M){ alert('Gere o relatorio primeiro!'); return; }
+  var msg='MAIS SUPERMERCADOS\n'+_M.per+'\n\nTotal: '+_M.totalC+' corridas | '+fmt(_M.totalV)+'\n\nPOR VALOR:\n';
+  _M.sVal.forEach(function(v){msg+=fmt(v.v)+' x '+v.q+' corridas = '+fmt(v.s)+'\n';});
+  msg+='\nPOR DATA:\n';
+  Object.keys(_M.pDt).sort().forEach(function(dt){var dd=_M.pDt[dt];msg+=dt+': '+dd.c+' corridas | '+fmt(dd.v)+'\n';});
+  msg+='\n22 Mobilidade';
+  window.open('https://wa.me/'+MAIS_TEL+'?text='+encodeURIComponent(msg), '_blank');
+}
+
+function pdfMais(){
+  if(!_M){ alert('Gere o relatorio primeiro!'); return; }
+  if(!window.jspdf){ alert('Biblioteca PDF nao carregada. Verifique sua conexao.'); return; }
+  var d=_M;
+  var doc=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  var y=15;
+  doc.setFillColor(31,140,230); doc.rect(0,0,210,22,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont('helvetica','bold');
+  doc.text('22 MOBILIDADE',14,10);
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  doc.text('Relatorio Mais Supermercados - '+d.per,14,17);
+  y=30;
+  doc.setTextColor(0,0,0); doc.setFillColor(235,246,255);
+  doc.roundedRect(14,y,85,20,2,2,'F'); doc.roundedRect(111,y,85,20,2,2,'F');
+  doc.setFontSize(8); doc.setTextColor(100,100,100);
+  doc.text('TOTAL CORRIDAS',56,y+6,{align:'center'});
+  doc.text('VALOR TOTAL',153,y+6,{align:'center'});
+  doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(31,140,230);
+  doc.text(String(d.totalC),56,y+15,{align:'center'});
+  doc.text(fmt(d.totalV),153,y+15,{align:'center'});
+  y+=28;
+  doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(31,140,230);
+  doc.text('Resumo por Valor',14,y); y+=5;
+  doc.setFillColor(31,140,230); doc.rect(14,y,182,7,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('VALOR',20,y+5); doc.text('QUANTIDADE',90,y+5); doc.text('SUBTOTAL',155,y+5);
+  y+=7;
+  var alt=false;
+  d.sVal.forEach(function(v){
+    if(alt){doc.setFillColor(245,245,245);doc.rect(14,y,182,6,'F');}
+    doc.setTextColor(0,0,0); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+    doc.text(fmt(v.v),20,y+4); doc.text(v.q+'x',90,y+4); doc.text(fmt(v.s),155,y+4);
+    y+=6; alt=!alt;
+  });
+  doc.setFillColor(220,238,252); doc.rect(14,y,182,7,'F');
+  doc.setTextColor(31,140,230); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('TOTAL',20,y+5); doc.text(String(d.totalC),90,y+5); doc.text(fmt(d.totalV),155,y+5);
+  y+=14;
+  Object.keys(d.pDt).sort().forEach(function(dt){
+    if(y>255){doc.addPage();y=15;}
+    var dd=d.pDt[dt];
+    var sv=Object.values(dd.vals).sort(function(a,b){return b.v-a.v;});
+    doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(31,140,230);
+    doc.text(dt+' - '+dd.c+' corridas | '+fmt(dd.v),14,y); y+=5;
+    doc.setFillColor(31,140,230); doc.rect(14,y,182,6,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text('VALOR',20,y+4); doc.text('QUANTIDADE',90,y+4); doc.text('SUBTOTAL',155,y+4);
+    y+=6; var alt2=false;
+    sv.forEach(function(v){
+      if(alt2){doc.setFillColor(245,245,245);doc.rect(14,y,182,5,'F');}
+      doc.setTextColor(0,0,0); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.text(fmt(v.v),20,y+4); doc.text(v.q+'x',90,y+4); doc.text(fmt(v.s),155,y+4);
+      y+=5; alt2=!alt2;
+    });
+    doc.setFillColor(220,238,252); doc.rect(14,y,182,5,'F');
+    doc.setTextColor(31,140,230); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text('TOTAL',20,y+4); doc.text(String(dd.c),90,y+4); doc.text(fmt(dd.v),155,y+4);
+    y+=10;
+  });
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(150,150,150);
+  doc.text('22 Mobilidade - Documento gerado automaticamente',105,285,{align:'center'});
+  doc.save('mais_supermercados_'+d.per.replace(/[^a-z0-9]/gi,'_')+'.pdf');
+}
+
+// ---- REPASSE ----
+function loadR(inp){
+  var f=inp.files[0]; if(!f) return;
+  readFile(f,function(rows,nome){
+    _dR=rows;
+    document.getElementById('flR').innerHTML='<div class="fitem"><span class="fname">'+nome+'</span></div>';
+  });
+  inp.value='';
+}
+function gerarR(){
+  if(!_dR||!_dR.length){ alert('Selecione o relatorio semanal!'); return; }
+  var keys=Object.keys(_dR[0]);
+  var motK=findCol(keys,['Motorista']);
+  var ganK=findCol(keys,['Fat. Dinheiro','Ganhos Totais','Ganhos','Faturado','Fat.']);
+  var recK=findCol(keys,['A Receber','Receber']);
+  var viaK=findCol(keys,['Viagens','Total de Viagens']);
+  if(!motK){ alert('Coluna Motorista nao encontrada. Colunas: '+keys.join(', ')); return; }
+  if(!recK){ alert('Coluna A Receber nao encontrada. Colunas: '+keys.join(', ')); return; }
+  var per=document.getElementById('perR').value||'Periodo';
+  var moto={};
+  _dR.forEach(function(r){
+    var nome=(r[motK]||'').trim(); if(!nome||nome==='#') return;
+    var k=norm(nome);
+    if(!moto[k]) moto[k]={nome:nome,via:0,fat:0,rec:0};
+    moto[k].via+=parseInt(r[viaK]||'0')||0;
+    moto[k].fat+=pv(r[ganK]||'0');
+    moto[k].rec+=pv(r[recK]||'0');
+  });
+  var sorted=Object.values(moto).filter(function(x){return x.rec>0;}).sort(function(a,b){return b.fat-a.fat;});
+  if(!sorted.length){ alert('Nenhum dado! Colunas: '+keys.join(', ')); return; }
+  var tV=sorted.reduce(function(s,x){return s+x.via;},0);
+  var tG=sorted.reduce(function(s,x){return s+x.fat;},0);
+  var tR=sorted.reduce(function(s,x){return s+x.rec;},0);
+  document.getElementById('sumR').innerHTML=
+    '<div class="kc bl"><div class="kc-l">Viagens</div><div class="kc-v">'+tV+'</div><div class="kc-s">'+sorted.length+' motoristas</div></div>'+
+    '<div class="kc gr"><div class="kc-l">Ganhos Totais</div><div class="kc-v">'+fmt(tG)+'</div></div>'+
+    '<div class="kc rd" style="grid-column:span 2"><div class="kc-l">Total a Repassar</div><div class="kc-v">'+fmt(tR)+'</div></div>';
+  var el=document.getElementById('motR'); el.innerHTML='';
+  sorted.forEach(function(d,idx){
+    var tel=getTel(d.nome);
+    var msg='22 MOBILIDADE - REPASSE SEMANAL\n'+per+'\n\nOla '+d.nome.split(' ')[0]+'!\n\nViagens: '+d.via+'\nGanhos: '+fmt(d.fat)+'\n\nValor a repassar: '+fmt(d.rec)+'\nPix na segunda-feira.\n\n22 Mobilidade';
+    var tid='tr'+idx;
+    var card=document.createElement('div'); card.className='dc bl';
+    card.innerHTML=
+      '<div class="dc-top">'+
+        '<div><div class="dc-nm">'+d.nome+'</div>'+
+        '<div class="ph-row"><input class="ph-inp" id="'+tid+'" type="tel" placeholder="71XXXXXXXXX" value="'+(tel||'')+'" data-nome="'+d.nome+'" onblur="onPhoneBlur(this)" onchange="onPhoneBlur(this)"></div></div>'+
+        '<button class="wbtn'+(tel?'':' pnd')+'" onclick="sendWpp(\''+tid+'\',\''+msg.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n')+'\')">Enviar</button>'+
+      '</div>'+
+      '<div class="dc-rws">'+
+        '<div class="dr"><div class="dr-l">Viagens</div><div class="dr-v">'+d.via+'</div></div>'+
+        '<div class="dr"><div class="dr-l">Ganhos</div><div class="dr-v">'+fmt(d.fat)+'</div></div>'+
+      '</div>'+
+      '<div class="dc-bot"><div><div class="dc-sl">A repassar para 22 Mob</div><div class="dc-sv sv-rd">'+fmt(d.rec)+'</div></div></div>';
+    el.appendChild(card);
+  });
+  document.getElementById('resR').style.display='block';
+}
+
+// ---- FECHAMENTO ----
+function addFM(inp){
+  Array.from(inp.files).forEach(function(f){
+    if(_dFM.find(function(x){return x.nome===f.name;})) return;
+    readFile(f,function(rows,nome){
+      _dFM.push({nome:nome,rows:rows});
+      renderFlFM();
+    });
+  });
+  inp.value='';
+}
+function renderFlFM(){
+  var fl=document.getElementById('flFM'); fl.innerHTML='';
+  _dFM.forEach(function(f,i){
+    var d=document.createElement('div'); d.className='fitem';
+    d.innerHTML='<span class="fname">'+f.nome+'</span><button class="fdel" onclick="_dFM.splice('+i+',1);renderFlFM()">X</button>';
+    fl.appendChild(d);
+  });
+  if(_dFM.length){
+    var am=document.createElement('div'); am.className='addmore';
+    am.innerHTML='<input type="file" multiple onchange="addFM(this)">+ Adicionar mais';
+    fl.appendChild(am);
+  }
+}
+function loadFR(inp){
+  var f=inp.files[0]; if(!f) return;
+  readFile(f,function(rows,nome){
+    _dFR=rows;
+    document.getElementById('flFR').innerHTML='<div class="fitem"><span class="fname">'+nome+'</span></div>';
+  });
+  inp.value='';
+}
+function gerarF(){
+  if(!_dFR||!_dFR.length){ alert('Importe o relatorio semanal!'); return; }
+  var per=document.getElementById('perF').value||'Periodo';
+  var keys=Object.keys(_dFR[0]);
+  var motK=findCol(keys,['Motorista']);
+  var ganK=findCol(keys,['Fat. Dinheiro','Ganhos Totais','Ganhos','Faturado','Fat.']);
+  var recK=findCol(keys,['A Receber','Receber']);
+  var viaK=findCol(keys,['Viagens','Total de Viagens']);
+  var rep={};
+  _dFR.forEach(function(r){
+    var nome=(r[motK]||'').trim(); if(!nome||nome==='#') return;
+    var k=norm(nome);
+    if(!rep[k]) rep[k]={nome:nome,via:0,fat:0,rec:0};
+    rep[k].via+=parseInt(r[viaK]||'0')||0;
+    rep[k].fat+=pv(r[ganK]||'0');
+    rep[k].rec+=pv(r[recK]||'0');
+  });
+  var mais={};
+  _dFM.forEach(function(f){
+    f.rows.forEach(function(r){
+      var rk=Object.keys(r);
+      var mK=findCol(rk,['Motorista']); var vK=findCol(rk,['Valor']); var pK=findCol(rk,['Passageiro']);
+      if(pK&&(r[pK]||'').toLowerCase().indexOf('mais')<0) return;
+      var nome=(r[mK]||'').trim(); if(!nome) return;
+      var k=norm(nome);
+      if(!mais[k]) mais[k]={nome:nome,c:0,v:0};
+      mais[k].c++; mais[k].v+=pv(r[vK]);
+    });
+  });
+  var result=[];
+  Object.keys(rep).forEach(function(k){
+    var r=rep[k]; var m=mais[k]||{c:0,v:0};
+    result.push({nome:r.nome,via:r.via,fat:r.fat,rec:r.rec,cM:m.c,vM:m.v,saldo:m.v-r.rec});
+  });
+  Object.keys(mais).forEach(function(k){
+    if(rep[k]) return;
+    var m=mais[k];
+    result.push({nome:m.nome,via:0,fat:0,rec:0,cM:m.c,vM:m.v,saldo:m.v});
+  });
+  result.sort(function(a,b){return b.fat-a.fat;});
+  var elP=document.getElementById('fPag'); elP.innerHTML='';
+  var elD=document.getElementById('fDev'); elD.innerHTML='';
+  result.forEach(function(r,idx){
+    var s=r.saldo; var tipo=s>=0?'pg':'dv';
+    var msg='22 MOBILIDADE - FECHAMENTO\n'+per+'\n\nOla '+r.nome.split(' ')[0]+'!\n\nViagens: '+r.via+'\nFaturado: '+fmt(r.fat)+'\nRepasse: - '+fmt(r.rec);
+    if(r.cM>0) msg+='\n\nCorridas Mais: '+r.cM+'\nValor Mais: '+fmt(r.vM)+'\n(-) Repasse: - '+fmt(r.rec);
+    msg+='\n\n-------------------------\n';
+    msg+=(s>=0?'VOCE RECEBE: '+fmt(s)+'\nPix na segunda.':'VOCE DEVE: '+fmt(Math.abs(s))+'\nEnviar Pix na segunda.');
+    msg+='\n\n22 Mobilidade';
+    var tel=getTel(r.nome);
+    var tid='tf'+idx;
+    var card=document.createElement('div'); card.className='dc '+tipo;
+    card.innerHTML=
+      '<div class="dc-top">'+
+        '<div><div class="dc-nm">'+r.nome+'<span class="dc-bdg '+(tipo==='pg'?'bdg-gr':'bdg-rd')+'">'+(s>=0?'VC PAGA':'DEVE')+'</span></div>'+
+        '<div class="ph-row"><input class="ph-inp" id="'+tid+'" type="tel" placeholder="71XXXXXXXXX" value="'+(tel||'')+'" data-nome="'+r.nome+'" onblur="onPhoneBlur(this)" onchange="onPhoneBlur(this)"></div></div>'+
+        '<button class="wbtn'+(tel?'':' pnd')+'" onclick="sendWpp(\''+tid+'\',\''+msg.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n')+'\')">Enviar</button>'+
+      '</div>'+
+      '<div class="dc-rws">'+
+        '<div class="dr"><div class="dr-l">Viagens</div><div class="dr-v">'+r.via+'</div></div>'+
+        '<div class="dr"><div class="dr-l">Faturado</div><div class="dr-v">'+fmt(r.fat)+'</div></div>'+
+        '<div class="dr"><div class="dr-l">Repasse</div><div class="dr-v" style="color:#ff3d3d">'+fmt(r.rec)+'</div></div>'+
+        '<div class="dr"><div class="dr-l">Mais ('+r.cM+'x)</div><div class="dr-v" style="color:#5BB8FF">'+fmt(r.vM)+'</div></div>'+
+      '</div>'+
+      '<div class="dc-bot">'+
+        '<div><div class="dc-sl">'+(s>=0?'Voce paga ao motorista':'Motorista deve pagar')+'</div>'+
+        '<div class="dc-sv '+(s>=0?'sv-gr':'sv-rd')+'">'+fmt(Math.abs(s))+'</div></div>'+
+      '</div>';
+    if(s>=0) elP.appendChild(card); else elD.appendChild(card);
+  });
+  document.getElementById('resF').style.display='block';
+}
+
+// ---- RESTAURAR ----
+(function(){
+  try {
+    var saved=localStorage.getItem('22mob_M');
+    if(saved){
+      _M=JSON.parse(saved);
+      var btn=document.createElement('button');
+      btn.className='rst-btn';
+      btn.textContent='Restaurar ultimo relatorio do Mercado';
+      btn.onclick=function(){ renderResM(); btn.style.display='none'; };
+      document.getElementById('rst0').appendChild(btn);
+    }
+  } catch(e){}
+})();
+</script>
+</body>
+</html>
